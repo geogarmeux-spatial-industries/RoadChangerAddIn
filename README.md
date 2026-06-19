@@ -36,3 +36,7 @@ See `Deploy/README-Deployment.md` — sign once, then install one certificate pe
 ## Notes
 - Built/verified against `D05D_02.gdb` (TDS schema).
 - Requires ArcGIS Pro 3.3+ ( .NET 8 ).
+
+## License
+
+Released under the [MIT License](LICENSE) © 2026 GeoGarmeux Spatial Industries.
