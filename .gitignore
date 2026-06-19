@@ -1,0 +1,22 @@
+## ---- Secrets: NEVER commit signing keys ----
+*.pfx
+*.snk
+*.p12
+*.key
+Deploy/*.pfx
+
+## ---- Build output / IDE ----
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+
+## ---- ArcGIS Pro add-in build artifact (regenerated on build) ----
+*.esriAddInX
+*.esriAddinX
+
+## ---- Misc ----
+*.log
+Thumbs.db
+.DS_Store

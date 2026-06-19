@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="RoadChangerAddIn.dll" defaultNamespace="RoadChangerAddIn"
+        xmlns="http://schemas.esri.com/DADF/Registry"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AddInInfo id="{e9272ec7-434d-4ab5-8104-07bc1668530c}" version="1.0" desktopVersion="3.3">
+    <Name>RoadChangerAddIn</Name>
+    <Description>One-click reclassification of TransportationGroundCrv segments by TDS subtype.</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>Chris</Author>
+    <Company>Your Org</Company>
+    <Date>2026-06-18</Date>
+    <Subject>Editing</Subject>
+  </AddInInfo>
+  <modules>
+    <insertModule id="RoadChangerAddIn_Module" className="TransportationModule" autoLoad="false" caption="RoadChangerAddIn Module">
+      <tabs>
+        <tab id="RoadChangerAddIn_Tab" caption="Transportation" keytip="T">
+          <group refID="RoadChangerAddIn_RoadsTracks" />
+          <group refID="RoadChangerAddIn_Structures" />
+          <group refID="RoadChangerAddIn_Ancillary" />
+        </tab>
+      </tabs>
+      <groups>
+        <group id="RoadChangerAddIn_RoadsTracks" caption="Roads &amp; Tracks" appearsOnAddInTab="false">
+          <button refID="RoadChangerAddIn_RoadButton" size="middle" />
+          <button refID="RoadChangerAddIn_Road1LaneButton" size="middle" />
+          <button refID="RoadChangerAddIn_Road2LaneButton" size="middle" />
+          <button refID="RoadChangerAddIn_CartTrackButton" size="middle" />
+          <button refID="RoadChangerAddIn_TrailButton" size="middle" />
+          <button refID="RoadChangerAddIn_RailwayButton" size="middle" />
+          <button refID="RoadChangerAddIn_RailwaySidetrackButton" size="middle" />
+        </group>
+        <group id="RoadChangerAddIn_Structures" caption="Structures" appearsOnAddInTab="false">
+          <button refID="RoadChangerAddIn_BridgeButton2" size="middle" />
+          <button refID="RoadChangerAddIn_BridgeSpanButton" size="middle" />
+          <button refID="RoadChangerAddIn_TunnelButton" size="middle" />
+          <button refID="RoadChangerAddIn_CulvertButton" size="middle" />
+          <button refID="RoadChangerAddIn_FordButton" size="middle" />
+          <button refID="RoadChangerAddIn_IceRouteButton" size="middle" />
+          <button refID="RoadChangerAddIn_CausewayStructureButton" size="middle" />
+          <button refID="RoadChangerAddIn_ArcadeButton" size="middle" />
+          <button refID="RoadChangerAddIn_CablewayButton" size="middle" />
+          <button refID="RoadChangerAddIn_TransRouteProtectStructButton" size="middle" />
+          <button refID="RoadChangerAddIn_OverheadObstructionButton" size="middle" />
+        </group>
+        <group id="RoadChangerAddIn_Ancillary" caption="Ancillary" appearsOnAddInTab="false">
+          <button refID="RoadChangerAddIn_SidewalkButton" size="middle" />
+          <button refID="RoadChangerAddIn_GateButton" size="middle" />
+          <button refID="RoadChangerAddIn_VehicleBarrierButton" size="middle" />
+        </group>
+      </groups>
+      <controls>
+        <button id="RoadChangerAddIn_RoadButton" caption="Road" className="RoadButton"
+                keytip="R" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Road">Code selected segment as Road (AP030).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_Road1LaneButton" caption="Road 1-Lane" className="Road1LaneButton"
+                keytip="O" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Road 1-Lane">Road (AP030) with LTN=1.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_Road2LaneButton" caption="Road 2-Lane" className="Road2LaneButton"
+                keytip="T" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Road 2-Lane">Road (AP030) with LTN=2.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_CartTrackButton" caption="Cart Track" className="CartTrackButton"
+                keytip="C" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Cart Track">Code selected segment as Cart Track (AP010).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_TrailButton" caption="Trail" className="TrailButton"
+                keytip="I" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Trail">Code selected segment as Trail (AP050).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_RailwayButton" caption="Railway" className="RailwayButton"
+                keytip="Y" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Railway">Code selected segment as Railway (AN010).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_RailwaySidetrackButton" caption="Rail Sidetrack" className="RailwaySidetrackButton"
+                keytip="S" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Rail Sidetrack">Code selected segment as Railway Sidetrack (AN050).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_BridgeButton2" caption="Bridge" className="BridgeButton2"
+                keytip="B" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Bridge">Code selected segment as Bridge (AQ040).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_BridgeSpanButton" caption="Bridge Span" className="BridgeSpanButton"
+                keytip="P" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Bridge Span">Code selected segment as Bridge Span (AQ045).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_TunnelButton" caption="Tunnel" className="TunnelButton"
+                keytip="U" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Tunnel">Code selected segment as Tunnel (AQ130).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_CulvertButton" caption="Culvert" className="CulvertButton"
+                keytip="L" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Culvert">Code selected segment as Culvert (AQ065).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_FordButton" caption="Ford" className="FordButton"
+                keytip="F" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Ford">Code selected segment as Ford (BH070).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_IceRouteButton" caption="Ice Route" className="IceRouteButton"
+                keytip="E" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Ice Route">Code selected segment as Ice Route (AQ075).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_CausewayStructureButton" caption="Causeway" className="CausewayStructureButton"
+                keytip="W" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Causeway">Code selected segment as Causeway Structure (AQ063).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_ArcadeButton" caption="Arcade" className="ArcadeButton"
+                keytip="D" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Arcade">Code selected segment as Arcade (AQ151).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_CablewayButton" caption="Cableway" className="CablewayButton"
+                keytip="K" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Cableway">Code selected segment as Cableway (AT041).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_TransRouteProtectStructButton" caption="Route Prot. Struct" className="TransRouteProtectStructButton"
+                keytip="Q" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Route Prot. Struct">Code selected segment as Transport Route Protection Structure (AL211).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_OverheadObstructionButton" caption="Overhead Obstr." className="OverheadObstructionButton"
+                keytip="H" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Overhead Obstr.">Code selected segment as Overhead Obstruction (AL155).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_SidewalkButton" caption="Sidewalk" className="SidewalkButton"
+                keytip="X" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Sidewalk">Code selected segment as Sidewalk (AQ035).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_GateButton" caption="Gate" className="GateButton"
+                keytip="G" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Gate">Code selected segment as Gate (AP040).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_VehicleBarrierButton" caption="Veh. Barrier" className="VehicleBarrierButton"
+                keytip="V" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Veh. Barrier">Code selected segment as Vehicle Barrier (AP041).<disabledText /></tooltip>
+        </button>
+      </controls>
+    </insertModule>
+  </modules>
+</ArcGIS>
