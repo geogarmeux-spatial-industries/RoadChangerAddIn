@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 GeoGarmeux Spatial Industries
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,43 +119,4 @@ namespace RoadChangerAddIn
 
                     // Build the attribute payload: classification + optional extras.
                     var attrs = new Dictionary<string, object>
-                    {
-                        { SubtypeField, SubtypeCode },
-                        { FCodeField,  FCode }
-                    };
-                    if (ExtraAttributes != null)
-                        foreach (var kv in ExtraAttributes)
-                            attrs[kv.Key] = kv.Value;
-
-                    var op = new EditOperation
-                    {
-                        Name = $"Code segment as {ClassLabel}",
-                        SelectModifiedFeatures = true
-                    };
-
-                    foreach (var oid in oids)
-                        op.Modify(target, oid, attrs);
-
-                    if (op.IsEmpty)
-                        return "Nothing to update.";
-
-                    return op.Execute()
-                        ? $"Coded segment as {ClassLabel}."
-                        : $"Edit failed: {op.ErrorMessage}";
-                });
-
-                if (!string.IsNullOrEmpty(result))
-                    MessageBox.Show(result, "Reclassify Transportation");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unexpected error: {ex.Message}", "Reclassify Transportation");
-            }
-        }
-
-        protected override void OnUpdate()
-        {
-            Enabled = MapView.Active?.Map?.SelectionCount > 0;
-        }
-    }
-}
+          

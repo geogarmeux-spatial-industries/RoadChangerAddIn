@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 GeoGarmeux Spatial Industries
+
 using System.Collections.Generic;
 
 namespace RoadChangerAddIn

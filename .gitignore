@@ -20,3 +20,6 @@ Deploy/*.pfx
 *.log
 Thumbs.db
 .DS_Store
+
+## ---- Local-only helper (not for the public repo) ----
+PUSH-TO-GITHUB.md
