@@ -23,7 +23,7 @@ ESRI signs Pro add-ins with its own tool, **`ArcGISSignAddIn.exe`** (ships in
 
    *For external distribution, buy a CA code-signing cert instead and skip straight to step 3.*
 
-2. **Build the add-in** in Visual Studio (Release). Pro auto-copies
+2. **Build the add-in** in Visual Studio (2022). Pro auto-copies
    `RoadChangerAddIn.esriAddinX` to `%USERPROFILE%\Documents\ArcGIS\AddIns\ArcGISPro`.
 
 3. **Sign it:**
@@ -70,8 +70,6 @@ Add this to `RoadChangerAddIn.csproj` (right-click project → Edit Project), ju
   <Exec Command="&quot;C:\Program Files\ArcGIS\Pro\bin\ArcGISSignAddIn.exe&quot; $(TargetDir)$(TargetName).esriAddInX /n:&quot;RoadChangerAddIn Publisher&quot; /s" />
 </Target>
 ```
-
-(I can add this for you if you want it wired in.)
 
 ---
 
