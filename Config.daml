@@ -19,6 +19,8 @@
           <group refID="RoadChangerAddIn_RoadsTracks" />
           <group refID="RoadChangerAddIn_Structures" />
           <group refID="RoadChangerAddIn_Ancillary" />
+          <group refID="RoadChangerAddIn_CustomTools" />
+          <group refID="RoadChangerAddIn_TemplateTools" />
         </tab>
       </tabs>
       <groups>
@@ -48,6 +50,18 @@
           <button refID="RoadChangerAddIn_SidewalkButton" size="middle" />
           <button refID="RoadChangerAddIn_GateButton" size="middle" />
           <button refID="RoadChangerAddIn_VehicleBarrierButton" size="middle" />
+        </group>
+        <group id="RoadChangerAddIn_CustomTools" caption="Custom Tools" appearsOnAddInTab="false">
+          <tool refID="RoadChangerAddIn_SizingCursorTool" size="large" />
+          <editBox refID="RoadChangerAddIn_DiameterEditBox" />
+          <button refID="RoadChangerAddIn_Preset12kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Preset50kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Preset250kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Preset500kButton" size="middle" />
+        </group>
+        <group id="RoadChangerAddIn_TemplateTools" caption="Template" appearsOnAddInTab="false">
+          <button refID="RoadChangerAddIn_CopyTemplateButton" size="large" />
+          <button refID="RoadChangerAddIn_PasteTemplateButton" size="large" />
         </group>
       </groups>
       <controls>
@@ -134,6 +148,39 @@
         <button id="RoadChangerAddIn_VehicleBarrierButton" caption="Veh. Barrier" className="VehicleBarrierButton"
                 keytip="V" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
           <tooltip heading="Veh. Barrier">Code selected segment as Vehicle Barrier (AP041).<disabledText /></tooltip>
+        </button>
+        <tool id="RoadChangerAddIn_SizingCursorTool" caption="Sizing Cursor" className="SizingCursorTool"
+              loadOnClick="true" condition="esri_mapping_mapPane"
+              smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="SC">
+          <tooltip heading="Sizing Cursor">Crosshair + circle reticle of the set diameter that follows the pointer. Adjust in the Diameter box or pick a preset.<disabledText /></tooltip>
+        </tool>
+        <editBox id="RoadChangerAddIn_DiameterEditBox" caption="Diameter (m):" className="DiameterEditBox"
+                 sizeString="888888" keytip="DM">
+          <tooltip heading="Diameter (m)">Circle diameter in meters. Type a value and press Enter to apply.<disabledText /></tooltip>
+        </editBox>
+        <button id="RoadChangerAddIn_Preset12kButton" caption="12.5k" className="Preset12kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P1">
+          <tooltip heading="12.5k">Set diameter to 100 m.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_Preset50kButton" caption="50k" className="Preset50kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P2">
+          <tooltip heading="50k">Set diameter to 300 m.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_Preset250kButton" caption="250k" className="Preset250kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P3">
+          <tooltip heading="250k">Set diameter to 1,000 m.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_Preset500kButton" caption="500k" className="Preset500kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P4">
+          <tooltip heading="500k">Set diameter to 3,000 m.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_CopyTemplateButton" caption="Copy Template" className="CopyTemplateButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="CT">
+          <tooltip heading="Copy Template">Capture all attributes (except identity, geometry, and class) from the one selected feature.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_PasteTemplateButton" caption="Paste Template" className="PasteTemplateButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="PT">
+          <tooltip heading="Paste Template">Apply the copied template attributes to the selected feature (keeps its class).<disabledText /></tooltip>
         </button>
       </controls>
     </insertModule>
