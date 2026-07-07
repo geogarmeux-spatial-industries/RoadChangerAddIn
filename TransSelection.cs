@@ -2,50 +2,12 @@
 // Copyright (c) 2026 GeoGarmeux Spatial Industries
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Mapping;
 
 namespace RoadChangerAddIn
 {
-    /// <summary>
-    /// Holds attribute values copied from a "template" feature so they can be
-    /// stamped onto other features (a one-click replacement for copy + paste-special).
-    /// Classification (FCSUBTYPE / F_CODE) and identity/geometry fields are NOT copied.
-    /// </summary>
-    internal static class TemplateStore
-    {
-        public static readonly HashSet<string> Excluded =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "OBJECTID", "OID", "GlobalID", "hc_GlobalID", "Version",
-                "SHAPE", "Shape", "SHAPE_Length", "Shape_Length",
-                "FCSUBTYPE", "F_CODE"
-            };
-
-        private static Dictionary<string, object> _values;
-
-        public static bool HasTemplate => _values != null && _values.Count > 0;
-        public static int Count => _values?.Count ?? 0;
-        public static string SourceLabel { get; private set; }
-        public static event EventHandler Changed;
-
-        public static void Set(Dictionary<string, object> values, string sourceLabel)
-        {
-            _values = values;
-            SourceLabel = sourceLabel;
-            Changed?.Invoke(null, EventArgs.Empty);
-        }
-
-        public static Dictionary<string, object> Snapshot()
-        {
-            return _values == null
-                ? new Dictionary<string, object>()
-                : new Dictionary<string, object>(_values);
-        }
-    }
-
     /// <summary>
     /// Locates the transportation line layer among the current selection by its
     /// underlying feature class (robust to renames / Subtype Group Layers / enterprise

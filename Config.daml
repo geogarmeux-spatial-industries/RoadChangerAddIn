@@ -20,15 +20,11 @@
           <group refID="RoadChangerAddIn_Structures" />
           <group refID="RoadChangerAddIn_Ancillary" />
           <group refID="RoadChangerAddIn_CustomTools" />
-          <group refID="RoadChangerAddIn_TemplateTools" />
+          <group refID="RoadChangerAddIn_ConvertTools" />
         </tab>
       </tabs>
       <groups>
-        <group id="RoadChangerAddIn_RoadsTracks" caption="Roads &amp; Tracks" appearsOnAddInTab="false">
-          <button refID="RoadChangerAddIn_RoadButton" size="middle" />
-          <button refID="RoadChangerAddIn_Road1LaneButton" size="middle" />
-          <button refID="RoadChangerAddIn_Road2LaneButton" size="middle" />
-          <button refID="RoadChangerAddIn_CartTrackButton" size="middle" />
+        <group id="RoadChangerAddIn_RoadsTracks" caption="Rail &amp; Trail" appearsOnAddInTab="false">
           <button refID="RoadChangerAddIn_TrailButton" size="middle" />
           <button refID="RoadChangerAddIn_RailwayButton" size="middle" />
           <button refID="RoadChangerAddIn_RailwaySidetrackButton" size="middle" />
@@ -59,28 +55,15 @@
           <button refID="RoadChangerAddIn_Preset250kButton" size="middle" />
           <button refID="RoadChangerAddIn_Preset500kButton" size="middle" />
         </group>
-        <group id="RoadChangerAddIn_TemplateTools" caption="Template" appearsOnAddInTab="false">
-          <button refID="RoadChangerAddIn_CopyTemplateButton" size="large" />
-          <button refID="RoadChangerAddIn_PasteTemplateButton" size="large" />
+        <group id="RoadChangerAddIn_ConvertTools" caption="Convert" appearsOnAddInTab="false">
+          <button refID="RoadChangerAddIn_MakeCartTrackButton" size="middle" />
+          <button refID="RoadChangerAddIn_MakeRoad1LaneButton" size="middle" />
+          <button refID="RoadChangerAddIn_MakeRoad2LaneButton" size="middle" />
+          <button refID="RoadChangerAddIn_MakeStreetButton" size="middle" />
+          <button refID="RoadChangerAddIn_MakeDirtRoadButton" size="middle" />
         </group>
       </groups>
       <controls>
-        <button id="RoadChangerAddIn_RoadButton" caption="Road" className="RoadButton"
-                keytip="R" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Road">Code selected segment as Road (AP030).<disabledText /></tooltip>
-        </button>
-        <button id="RoadChangerAddIn_Road1LaneButton" caption="Road 1-Lane" className="Road1LaneButton"
-                keytip="O" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Road 1-Lane">Road (AP030) with LTN=1.<disabledText /></tooltip>
-        </button>
-        <button id="RoadChangerAddIn_Road2LaneButton" caption="Road 2-Lane" className="Road2LaneButton"
-                keytip="T" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Road 2-Lane">Road (AP030) with LTN=2.<disabledText /></tooltip>
-        </button>
-        <button id="RoadChangerAddIn_CartTrackButton" caption="Cart Track" className="CartTrackButton"
-                keytip="C" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Cart Track">Code selected segment as Cart Track (AP010).<disabledText /></tooltip>
-        </button>
         <button id="RoadChangerAddIn_TrailButton" caption="Trail" className="TrailButton"
                 keytip="I" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
           <tooltip heading="Trail">Code selected segment as Trail (AP050).<disabledText /></tooltip>
@@ -174,13 +157,25 @@
                 loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P4">
           <tooltip heading="500k">Set diameter to 3,000 m.<disabledText /></tooltip>
         </button>
-        <button id="RoadChangerAddIn_CopyTemplateButton" caption="Copy Template" className="CopyTemplateButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="CT">
-          <tooltip heading="Copy Template">Capture all attributes (except identity, geometry, and class) from the one selected feature.<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_MakeCartTrackButton" caption="Make Cart Track" className="MakeCartTrackButton"
+                loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="MC">
+          <tooltip heading="Make Cart Track">Convert the selected segment to Cart Track (AP010) with cart-track defaults; clears road-only fields.<disabledText /></tooltip>
         </button>
-        <button id="RoadChangerAddIn_PasteTemplateButton" caption="Paste Template" className="PasteTemplateButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="PT">
-          <tooltip heading="Paste Template">Apply the copied template attributes to the selected feature (keeps its class).<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_MakeRoad1LaneButton" caption="Make Road 1-Lane" className="MakeRoad1LaneButton"
+                loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="M1">
+          <tooltip heading="Make Road 1-Lane">Convert to Road (AP030), 1 lane.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_MakeRoad2LaneButton" caption="Make Road 2-Lane" className="MakeRoad2LaneButton"
+                loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="M2">
+          <tooltip heading="Make Road 2-Lane">Convert to Road (AP030), 2 lane.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_MakeStreetButton" caption="Make Street" className="MakeStreetButton"
+                loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="MS">
+          <tooltip heading="Make Street">Convert to Street (AP030, RTY=Street).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_MakeDirtRoadButton" caption="Make Dirt Road" className="MakeDirtRoadButton"
+                loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="MD">
+          <tooltip heading="Make Dirt Road">Convert to Road (AP030) with unimproved surface.<disabledText /></tooltip>
         </button>
       </controls>
     </insertModule>
