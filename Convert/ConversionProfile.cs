@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using ArcGIS.Desktop.Editing;
+using ArcGIS.Desktop.Editing.Attributes;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
@@ -13,8 +14,8 @@ namespace RoadChangerAddIn
 {
     /// <summary>
     /// A per-target-class conversion recipe. Sets the class (FCSUBTYPE/F_CODE),
-    /// stamps the Defaults, and clears the Clear fields to noInformation. Any field
-    /// NOT listed is left untouched, so it "carries" from whatever the feature was.
+    /// stamps the Defaults, and clears the Clear fields to noInformation. Every other
+    /// field is explicitly carried from the source (see ConvertButtonBase).
     /// </summary>
     internal class ConversionProfile
     {
@@ -61,13 +62,24 @@ namespace RoadChangerAddIn
     }
 
     /// <summary>
-    /// Base for the one-click "convert this segment to class X" buttons. Applies the
-    /// Profile in a single undoable edit. Requires exactly one selected feature.
+    /// Base for the one-click "convert this segment to class X" buttons. Reads the
+    /// current feature, then writes EVERY writable field explicitly: profile Defaults,
+    /// cleared Clear fields, and the existing value for everything else. Writing all
+    /// fields prevents the subtype change from silently resetting carried values.
+    /// Requires exactly one selected feature; single undoable edit.
     /// </summary>
     internal abstract class ConvertButtonBase : Button
     {
         protected abstract ConversionProfile Profile { get; }
         protected abstract string ClassLabel { get; }
+
+        // Identity / geometry / read-only fields we must never write back.
+        private static readonly HashSet<string> ReadOnly =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "OBJECTID", "OID", "GlobalID", "hc_GlobalID", "Version",
+                "SHAPE", "Shape", "SHAPE_Length", "Shape_Length"
+            };
 
         protected override async void OnClick()
         {
@@ -81,15 +93,28 @@ namespace RoadChangerAddIn
                     if (error != null) return error;
 
                     var p = Profile;
-                    var attrs = new Dictionary<string, object>
+
+                    // Read the current feature so we can explicitly carry everything the
+                    // profile doesn't override or clear (guards against subtype resets).
+                    var insp = new Inspector();
+                    insp.Load(layer, oid);
+
+                    var attrs = new Dictionary<string, object>();
+                    foreach (var a in insp)
                     {
-                        { "FCSUBTYPE", p.SubtypeCode },
-                        { "F_CODE",    p.FCode }
-                    };
-                    if (p.Defaults != null)
-                        foreach (var kv in p.Defaults) attrs[kv.Key] = kv.Value;
-                    if (p.Clear != null)
-                        foreach (var f in p.Clear) attrs[f] = ConversionProfile.NoInfo;
+                        string f = a.FieldName;
+                        if (string.IsNullOrEmpty(f) || ReadOnly.Contains(f))
+                            continue;
+
+                        if (p.Defaults != null && p.Defaults.ContainsKey(f))
+                            attrs[f] = p.Defaults[f];              // class default
+                        else if (p.Clear != null && Array.IndexOf(p.Clear, f) >= 0)
+                            attrs[f] = ConversionProfile.NoInfo;   // clear unused
+                        else
+                            attrs[f] = insp[f];                    // carry existing value
+                    }
+                    attrs["FCSUBTYPE"] = p.SubtypeCode;
+                    attrs["F_CODE"] = p.FCode;
 
                     var op = new EditOperation
                     {
