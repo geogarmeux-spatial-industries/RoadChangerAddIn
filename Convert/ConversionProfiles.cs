@@ -12,6 +12,7 @@ namespace RoadChangerAddIn
     //  Decode: RLE 2=Level | PCF 2=Intact | LOC 44=On Surface | ACC 1=Accurate
     //          CWT/CIW/THR 1000=FALSE/1001=TRUE
     //          RTY 3=Road 4=Street | RIN_ROI 5=Local | ZI016_ROC 3=Flexible Pavement 1=Unimproved
+    //          RMWC/SGCC 5=Closed Interval (interval-closure fields)
     // =====================================================================
 
     internal class MakeCartTrackButton : ConvertButtonBase
@@ -35,7 +36,8 @@ namespace RoadChangerAddIn
             FCode = "AP030",
             Defaults = TransFields.With(new Dictionary<string, object>
             {
-                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 1 }
+                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 1 },
+                { "RMWC", 5 }, { "SGCC", 5 }
             }),
             Clear = TransFields.CartOnly
         };
@@ -50,7 +52,8 @@ namespace RoadChangerAddIn
             FCode = "AP030",
             Defaults = TransFields.With(new Dictionary<string, object>
             {
-                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 2 }
+                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 2 },
+                { "RMWC", 5 }, { "SGCC", 5 }
             }),
             Clear = TransFields.CartOnly
         };
@@ -65,7 +68,8 @@ namespace RoadChangerAddIn
             FCode = "AP030",
             Defaults = TransFields.With(new Dictionary<string, object>
             {
-                { "WID", 5.5 }, { "RTY", 4 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 2 }
+                { "WID", 5.5 }, { "RTY", 4 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 3 }, { "LTN", 2 },
+                { "RMWC", 5 }, { "SGCC", 5 }
             }),
             Clear = TransFields.CartOnly
         };
@@ -80,7 +84,8 @@ namespace RoadChangerAddIn
             FCode = "AP030",
             Defaults = TransFields.With(new Dictionary<string, object>
             {
-                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 1 }, { "LTN", 1 }
+                { "WID", 5.5 }, { "RTY", 3 }, { "RIN_ROI", 5 }, { "ZI016_ROC", 1 }, { "LTN", 1 },
+                { "RMWC", 5 }, { "SGCC", 5 }
             }),
             Clear = TransFields.CartOnly
         };

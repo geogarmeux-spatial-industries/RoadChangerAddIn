@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Editing;
 using ArcGIS.Desktop.Editing.Attributes;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -109,9 +110,22 @@ namespace RoadChangerAddIn
                         if (p.Defaults != null && p.Defaults.ContainsKey(f))
                             attrs[f] = p.Defaults[f];              // class default
                         else if (p.Clear != null && Array.IndexOf(p.Clear, f) >= 0)
-                            attrs[f] = ConversionProfile.NoInfo;   // clear unused
+                            attrs[f] = (a.FieldType == FieldType.String)
+                                ? (object)"noInformation"            // string no-data (e.g. RIN_RTN)
+                                : (object)ConversionProfile.NoInfo;  // numeric no-data (-999999)
                         else
-                            attrs[f] = insp[f];                    // carry existing value
+                        {
+                            // Carry only MEANINGFUL values. Skip empties so we never write a
+                            // noInformation sentinel into a domain that rejects it (e.g.
+                            // AP030_RMWC / AP030_SGCC have no -999999 member). Skipped fields
+                            // are left untouched.
+                            var v = insp[f];
+                            if (v == null || v is DBNull) continue;
+                            if (v is int iv && iv == ConversionProfile.NoInfo) continue;
+                            if (v is double dv && dv == ConversionProfile.NoInfo) continue;
+                            if (v is string s && (s.Length == 0 || s == "noInformation")) continue;
+                            attrs[f] = v;                          // carry meaningful value
+                        }
                     }
                     attrs["FCSUBTYPE"] = p.SubtypeCode;
                     attrs["F_CODE"] = p.FCode;
