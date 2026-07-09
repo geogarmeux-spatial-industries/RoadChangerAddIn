@@ -139,7 +139,7 @@
         <tool id="RoadChangerAddIn_SizingCursorTool" caption="Sizing Cursor" className="SizingCursorTool"
               loadOnClick="true" condition="esri_mapping_mapPane"
               smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="SC">
-          <tooltip heading="Sizing Cursor">Crosshair + circle reticle of the TDS spacing diameter that follows the pointer. Pick a scale (color) and a requirement, or type a diameter. Left-click selects inside the circle; left-drag draws a rectangle marquee.<disabledText /></tooltip>
+          <tooltip heading="Sizing Cursor">Crosshair + circle reticle of the TDS spacing diameter that follows the pointer. Pick a scale (color) and a requirement, or type a diameter. Left-drag a rectangle marquee to select (Shift adds, Ctrl removes).<disabledText /></tooltip>
         </tool>
         <editBox id="RoadChangerAddIn_DiameterEditBox" caption="Diameter (m):" className="DiameterEditBox"
                  sizeString="888888" keytip="DM">

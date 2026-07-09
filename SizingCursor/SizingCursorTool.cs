@@ -137,39 +137,16 @@ namespace RoadChangerAddIn
                 var mv = MapView.Active;
                 if (mv == null || geometry == null) return true;
 
+                // Only a real drag (non-empty rectangle) selects; a plain click does nothing.
+                var env = geometry.Extent;
+                if (env == null || (env.Width < 1e-6 && env.Height < 1e-6))
+                    return true;
+
                 var method = SelectionCombinationMethod.New;
                 if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) method = SelectionCombinationMethod.Add;
                 else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) method = SelectionCombinationMethod.Subtract;
 
-                var env = geometry.Extent;
-                bool isClick = env == null || (env.Width < 1e-6 && env.Height < 1e-6);
-
-                if (isClick)
-                {
-                    // click -> select inside the sizing circle at the point
-                    var center = env?.Center;
-                    if (center == null) return true;
-                    var sr = center.SpatialReference ?? mv.Map.SpatialReference;
-                    double radius = SizingCursorState.Diameter / 2.0;
-
-                    var ell = new GeodesicEllipseParameter
-                    {
-                        Center = center.Coordinate2D,
-                        SemiAxis1Length = radius,
-                        SemiAxis2Length = radius,
-                        AxisDirection = 0.0,
-                        LinearUnit = LinearUnit.Meters,
-                        OutGeometryType = GeometryType.Polygon,
-                        VertexCount = 120
-                    };
-                    var circle = GeometryEngine.Instance.GeodesicEllipse(ell, sr) as Polygon;
-                    if (circle != null) mv.SelectFeatures(circle, method);
-                }
-                else
-                {
-                    // drag -> rectangle marquee
-                    mv.SelectFeatures(geometry, method);
-                }
+                mv.SelectFeatures(geometry, method);   // rectangle marquee only
                 return true;
             });
         }
