@@ -7,23 +7,23 @@ using ArcGIS.Desktop.Framework.Contracts;
 namespace RoadChangerAddIn
 {
     /// <summary>
-    /// Editable Radius (m) box = the active spacing distance. Reflects the shared
-    /// radius and pushes typed values back on Enter (manual override).
+    /// Editable Diameter (m) box = the active spacing distance. Reflects the shared
+    /// diameter and pushes typed values back on Enter (manual override).
     /// </summary>
-    internal class RadiusEditBox : EditBox
+    internal class DiameterEditBox : EditBox
     {
-        public RadiusEditBox()
+        public DiameterEditBox()
         {
-            Text = Format(SizingCursorState.Radius);
-            SizingCursorState.RadiusChanged += (s, e) => Text = Format(SizingCursorState.Radius);
+            Text = Format(SizingCursorState.Diameter);
+            SizingCursorState.DiameterChanged += (s, e) => Text = Format(SizingCursorState.Diameter);
         }
 
         protected override void OnEnter()
         {
             if (double.TryParse(Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double d) && d > 0)
-                SizingCursorState.Radius = d;
+                SizingCursorState.Diameter = d;
             else
-                Text = Format(SizingCursorState.Radius);  // revert invalid input
+                Text = Format(SizingCursorState.Diameter);  // revert invalid input
         }
 
         private static string Format(double d) => d.ToString("0.###", CultureInfo.InvariantCulture);
@@ -41,7 +41,7 @@ namespace RoadChangerAddIn
     internal class Scale250kButton : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S250K;  }
     internal class Scale500kButton : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S500K;  }
 
-    // ---- Requirement buttons: set the radius from the active scale's row ----
+    // ---- Requirement buttons: set the diameter from the active scale's row ----
     internal abstract class ReqButtonBase : Button
     {
         protected abstract SizeReq Req { get; }

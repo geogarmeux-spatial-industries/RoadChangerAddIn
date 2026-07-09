@@ -13,9 +13,9 @@ namespace RoadChangerAddIn
 {
     /// <summary>
     /// Map tool that draws a sizing reticle following the pointer: a geodesic circle
-    /// of the current RADIUS (a TDS spacing requirement) plus a full-view crosshair,
-    /// in the current scale's color. Left-click selects everything the circle covers
-    /// (Shift adds, Ctrl removes). Radius and color come from <see cref="SizingCursorState"/>.
+    /// of the current DIAMETER (a TDS spacing requirement) plus a full-view crosshair,
+    /// in the current scale's color. Selection: left-click selects inside the circle;
+    /// left-drag draws a rectangle marquee and selects inside it (Shift adds, Ctrl removes).
     /// </summary>
     internal class SizingCursorTool : MapTool
     {
@@ -28,21 +28,23 @@ namespace RoadChangerAddIn
 
         public SizingCursorTool()
         {
-            IsSketchTool = false;
+            IsSketchTool = true;
+            SketchType = SketchGeometryType.Rectangle;   // drag = marquee; click = tiny rect
+            SketchOutputMode = SketchOutputMode.Map;
             Cursor = Cursors.Cross;
         }
 
         protected override Task OnToolActivateAsync(bool hasMapViewChanged)
         {
             _rebuildSymbol = true;
-            SizingCursorState.RadiusChanged += OnRadiusChanged;
+            SizingCursorState.DiameterChanged += OnDiameterChanged;
             SizingCursorState.ColorChanged += OnColorChanged;
             return Task.CompletedTask;
         }
 
         protected override Task OnToolDeactivateAsync(bool hasMapViewChanged)
         {
-            SizingCursorState.RadiusChanged -= OnRadiusChanged;
+            SizingCursorState.DiameterChanged -= OnDiameterChanged;
             SizingCursorState.ColorChanged -= OnColorChanged;
             return QueuedTask.Run(() =>
             {
@@ -51,7 +53,7 @@ namespace RoadChangerAddIn
             });
         }
 
-        private void OnRadiusChanged(object sender, EventArgs e) => Draw();
+        private void OnDiameterChanged(object sender, EventArgs e) => Draw();
         private void OnColorChanged(object sender, EventArgs e) { _rebuildSymbol = true; Draw(); }
 
         protected override void OnToolMouseMove(MapViewMouseEventArgs e)
@@ -84,9 +86,9 @@ namespace RoadChangerAddIn
                     var pt = mv.ClientToMap(client);
                     if (pt == null) return;
                     var sr = pt.SpatialReference ?? mv.Map.SpatialReference;
-                    double radius = SizingCursorState.Radius;
+                    double radius = SizingCursorState.Diameter / 2.0;
 
-                    // --- geodesic circle at the spacing radius ---
+                    // --- geodesic circle of the set diameter ---
                     var ell = new GeodesicEllipseParameter
                     {
                         Center = pt.Coordinate2D,
@@ -127,43 +129,48 @@ namespace RoadChangerAddIn
             });
         }
 
-        // Left-click selects everything the sizing circle covers.
-        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                e.Handled = true;   // route to HandleMouseDownAsync
-        }
-
-        protected override Task HandleMouseDownAsync(MapViewMouseButtonEventArgs e)
+        // Sketch completes on click (tiny rectangle) or drag (real rectangle).
+        protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
         {
             return QueuedTask.Run(() =>
             {
                 var mv = MapView.Active;
-                if (mv == null) return;
-
-                var pt = mv.ClientToMap(e.ClientPoint);
-                if (pt == null) return;
-                var sr = pt.SpatialReference ?? mv.Map.SpatialReference;
-                double radius = SizingCursorState.Radius;
-
-                var ell = new GeodesicEllipseParameter
-                {
-                    Center = pt.Coordinate2D,
-                    SemiAxis1Length = radius,
-                    SemiAxis2Length = radius,
-                    AxisDirection = 0.0,
-                    LinearUnit = LinearUnit.Meters,
-                    OutGeometryType = GeometryType.Polygon,
-                    VertexCount = 120
-                };
-                var circle = GeometryEngine.Instance.GeodesicEllipse(ell, sr) as Polygon;
-                if (circle == null) return;
+                if (mv == null || geometry == null) return true;
 
                 var method = SelectionCombinationMethod.New;
                 if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) method = SelectionCombinationMethod.Add;
                 else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) method = SelectionCombinationMethod.Subtract;
 
-                mv.SelectFeatures(circle, method);
+                var env = geometry.Extent;
+                bool isClick = env == null || (env.Width < 1e-6 && env.Height < 1e-6);
+
+                if (isClick)
+                {
+                    // click -> select inside the sizing circle at the point
+                    var center = env?.Center;
+                    if (center == null) return true;
+                    var sr = center.SpatialReference ?? mv.Map.SpatialReference;
+                    double radius = SizingCursorState.Diameter / 2.0;
+
+                    var ell = new GeodesicEllipseParameter
+                    {
+                        Center = center.Coordinate2D,
+                        SemiAxis1Length = radius,
+                        SemiAxis2Length = radius,
+                        AxisDirection = 0.0,
+                        LinearUnit = LinearUnit.Meters,
+                        OutGeometryType = GeometryType.Polygon,
+                        VertexCount = 120
+                    };
+                    var circle = GeometryEngine.Instance.GeodesicEllipse(ell, sr) as Polygon;
+                    if (circle != null) mv.SelectFeatures(circle, method);
+                }
+                else
+                {
+                    // drag -> rectangle marquee
+                    mv.SelectFeatures(geometry, method);
+                }
+                return true;
             });
         }
     }
