@@ -12,11 +12,10 @@ using ArcGIS.Desktop.Mapping;
 namespace RoadChangerAddIn
 {
     /// <summary>
-    /// A map tool that draws a sizing reticle that follows the pointer: a true
-    /// ground circle of the configured diameter (meters) plus full-view crosshair
-    /// lines. Diameter comes from <see cref="SizingCursorState"/> (the Diameter box
-    /// or a preset button). The circle is geodesic, so it represents the same real
-    /// distance regardless of projection or zoom.
+    /// Map tool that draws a sizing reticle following the pointer: a geodesic circle
+    /// of the current RADIUS (a TDS spacing requirement) plus a full-view crosshair,
+    /// in the current scale's color. Left-click selects everything the circle covers
+    /// (Shift adds, Ctrl removes). Radius and color come from <see cref="SizingCursorState"/>.
     /// </summary>
     internal class SizingCursorTool : MapTool
     {
@@ -25,6 +24,7 @@ namespace RoadChangerAddIn
         private CIMSymbolReference _lineSymRef;
         private System.Windows.Point? _lastClient;
         private bool _busy;
+        private volatile bool _rebuildSymbol = true;
 
         public SizingCursorTool()
         {
@@ -34,18 +34,16 @@ namespace RoadChangerAddIn
 
         protected override Task OnToolActivateAsync(bool hasMapViewChanged)
         {
-            SizingCursorState.DiameterChanged += OnDiameterChanged;
-            return QueuedTask.Run(() =>
-            {
-                _lineSymRef = SymbolFactory.Instance
-                    .ConstructLineSymbol(SizingCursorState.CursorColor, 1.5)
-                    .MakeSymbolReference();
-            });
+            _rebuildSymbol = true;
+            SizingCursorState.RadiusChanged += OnRadiusChanged;
+            SizingCursorState.ColorChanged += OnColorChanged;
+            return Task.CompletedTask;
         }
 
         protected override Task OnToolDeactivateAsync(bool hasMapViewChanged)
         {
-            SizingCursorState.DiameterChanged -= OnDiameterChanged;
+            SizingCursorState.RadiusChanged -= OnRadiusChanged;
+            SizingCursorState.ColorChanged -= OnColorChanged;
             return QueuedTask.Run(() =>
             {
                 _circleOverlay?.Dispose(); _circleOverlay = null;
@@ -53,8 +51,8 @@ namespace RoadChangerAddIn
             });
         }
 
-        // Redraw at the last known pointer position when the diameter changes.
-        private void OnDiameterChanged(object sender, EventArgs e) => Draw();
+        private void OnRadiusChanged(object sender, EventArgs e) => Draw();
+        private void OnColorChanged(object sender, EventArgs e) { _rebuildSymbol = true; Draw(); }
 
         protected override void OnToolMouseMove(MapViewMouseEventArgs e)
         {
@@ -75,12 +73,20 @@ namespace RoadChangerAddIn
                     var mv = MapView.Active;
                     if (mv == null) return;
 
+                    if (_rebuildSymbol || _lineSymRef == null)
+                    {
+                        _lineSymRef = SymbolFactory.Instance
+                            .ConstructLineSymbol(SizingCursorState.CursorColor, 1.5)
+                            .MakeSymbolReference();
+                        _rebuildSymbol = false;
+                    }
+
                     var pt = mv.ClientToMap(client);
                     if (pt == null) return;
                     var sr = pt.SpatialReference ?? mv.Map.SpatialReference;
-                    double radius = SizingCursorState.Diameter / 2.0;
+                    double radius = SizingCursorState.Radius;
 
-                    // --- geodesic circle (true ground size) ---
+                    // --- geodesic circle at the spacing radius ---
                     var ell = new GeodesicEllipseParameter
                     {
                         Center = pt.Coordinate2D,
@@ -138,9 +144,8 @@ namespace RoadChangerAddIn
                 var pt = mv.ClientToMap(e.ClientPoint);
                 if (pt == null) return;
                 var sr = pt.SpatialReference ?? mv.Map.SpatialReference;
-                double radius = SizingCursorState.Diameter / 2.0;
+                double radius = SizingCursorState.Radius;
 
-                // circle as a polygon (area select) of the set diameter, at the click point
                 var ell = new GeodesicEllipseParameter
                 {
                     Center = pt.Coordinate2D,
@@ -154,7 +159,6 @@ namespace RoadChangerAddIn
                 var circle = GeometryEngine.Instance.GeodesicEllipse(ell, sr) as Polygon;
                 if (circle == null) return;
 
-                // Shift = add, Ctrl = remove, otherwise new selection.
                 var method = SelectionCombinationMethod.New;
                 if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) method = SelectionCombinationMethod.Add;
                 else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) method = SelectionCombinationMethod.Subtract;

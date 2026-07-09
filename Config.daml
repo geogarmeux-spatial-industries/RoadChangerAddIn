@@ -49,11 +49,15 @@
         </group>
         <group id="RoadChangerAddIn_CustomTools" caption="Custom Tools" appearsOnAddInTab="false">
           <tool refID="RoadChangerAddIn_SizingCursorTool" size="large" />
-          <editBox refID="RoadChangerAddIn_DiameterEditBox" />
-          <button refID="RoadChangerAddIn_Preset12kButton" size="middle" />
-          <button refID="RoadChangerAddIn_Preset50kButton" size="middle" />
-          <button refID="RoadChangerAddIn_Preset250kButton" size="middle" />
-          <button refID="RoadChangerAddIn_Preset500kButton" size="middle" />
+          <editBox refID="RoadChangerAddIn_RadiusEditBox" />
+          <button refID="RoadChangerAddIn_Scale12kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Scale50kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Scale250kButton" size="middle" />
+          <button refID="RoadChangerAddIn_Scale500kButton" size="middle" />
+          <button refID="RoadChangerAddIn_ReqRoadSpacingButton" size="middle" />
+          <button refID="RoadChangerAddIn_ReqRoadBuaButton" size="middle" />
+          <button refID="RoadChangerAddIn_ReqCartSparseButton" size="middle" />
+          <button refID="RoadChangerAddIn_ReqCartDenseButton" size="middle" />
         </group>
         <group id="RoadChangerAddIn_ConvertTools" caption="Convert" appearsOnAddInTab="false">
           <button refID="RoadChangerAddIn_MakeCartTrackButton" size="middle" />
@@ -135,27 +139,43 @@
         <tool id="RoadChangerAddIn_SizingCursorTool" caption="Sizing Cursor" className="SizingCursorTool"
               loadOnClick="true" condition="esri_mapping_mapPane"
               smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="SC">
-          <tooltip heading="Sizing Cursor">Crosshair + circle reticle of the set diameter that follows the pointer. Adjust in the Diameter box or pick a preset.<disabledText /></tooltip>
+          <tooltip heading="Sizing Cursor">Crosshair + circle reticle at the TDS spacing radius that follows the pointer. Pick a scale (color) and a requirement, or type a radius. Left-click selects inside the circle.<disabledText /></tooltip>
         </tool>
-        <editBox id="RoadChangerAddIn_DiameterEditBox" caption="Diameter (m):" className="DiameterEditBox"
-                 sizeString="888888" keytip="DM">
-          <tooltip heading="Diameter (m)">Circle diameter in meters. Type a value and press Enter to apply.<disabledText /></tooltip>
+        <editBox id="RoadChangerAddIn_RadiusEditBox" caption="Radius (m):" className="RadiusEditBox"
+                 sizeString="888888" keytip="RM">
+          <tooltip heading="Radius (m)">Circle radius in meters (the spacing distance). Type a value and press Enter.<disabledText /></tooltip>
         </editBox>
-        <button id="RoadChangerAddIn_Preset12kButton" caption="12.5k" className="Preset12kButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P1">
-          <tooltip heading="12.5k">Set diameter to 100 m.<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_Scale12kButton" caption="12.5K" className="Scale12kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="S1">
+          <tooltip heading="12.5K (black)">Scale 1:12,500 — black reticle; applies its spacing for the active requirement.<disabledText /></tooltip>
         </button>
-        <button id="RoadChangerAddIn_Preset50kButton" caption="50k" className="Preset50kButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P2">
-          <tooltip heading="50k">Set diameter to 300 m.<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_Scale50kButton" caption="50K" className="Scale50kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="S2">
+          <tooltip heading="50K (yellow)">Scale 1:50,000 — yellow reticle.<disabledText /></tooltip>
         </button>
-        <button id="RoadChangerAddIn_Preset250kButton" caption="250k" className="Preset250kButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P3">
-          <tooltip heading="250k">Set diameter to 1,000 m.<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_Scale250kButton" caption="250K" className="Scale250kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="S3">
+          <tooltip heading="250K (green)">Scale 1:250,000 — green reticle.<disabledText /></tooltip>
         </button>
-        <button id="RoadChangerAddIn_Preset500kButton" caption="500k" className="Preset500kButton"
-                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="P4">
-          <tooltip heading="500k">Set diameter to 3,000 m.<disabledText /></tooltip>
+        <button id="RoadChangerAddIn_Scale500kButton" caption="500K" className="Scale500kButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="S4">
+          <tooltip heading="500K (purple)">Scale 1:500,000 — purple reticle.<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_ReqRoadSpacingButton" caption="Road Spacing" className="ReqRoadSpacingButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="Q1">
+          <tooltip heading="Road Spacing">Radius = road spacing for the active scale (12.5K 150 / 50K 300 / 250K 1500 / 500K 3000 m).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_ReqRoadBuaButton" caption="Road BUA" className="ReqRoadBuaButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="Q2">
+          <tooltip heading="Road BUA">Radius = road BUA suggestion (12.5K 100 / 50K 200 / 250K 1000 / 500K 2000 m).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_ReqCartSparseButton" caption="Cart Sparse" className="ReqCartSparseButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="Q3">
+          <tooltip heading="Cart Sparse/Moderate">Radius = cart-track sparse/moderate spacing (same as road spacing per scale).<disabledText /></tooltip>
+        </button>
+        <button id="RoadChangerAddIn_ReqCartDenseButton" caption="Cart Dense" className="ReqCartDenseButton"
+                loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="Q4">
+          <tooltip heading="Cart Moderate/Dense">Radius = cart-track moderate/dense spacing (12.5K 1000 / 50K 1000 / 250K 5000 / 500K 10000 m).<disabledText /></tooltip>
         </button>
         <button id="RoadChangerAddIn_MakeCartTrackButton" caption="Make Cart Track" className="MakeCartTrackButton"
                 loadOnClick="true" smallImage="GenericButtonGreen16" largeImage="GenericButtonGreen32" keytip="MC">

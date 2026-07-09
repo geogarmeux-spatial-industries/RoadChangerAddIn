@@ -7,41 +7,49 @@ using ArcGIS.Desktop.Framework.Contracts;
 namespace RoadChangerAddIn
 {
     /// <summary>
-    /// Editable Diameter (m) box. Reflects the shared diameter and pushes typed
-    /// values back into it on Enter. Stays available alongside the presets so the
-    /// size can always be adjusted manually.
+    /// Editable Radius (m) box = the active spacing distance. Reflects the shared
+    /// radius and pushes typed values back on Enter (manual override).
     /// </summary>
-    internal class DiameterEditBox : EditBox
+    internal class RadiusEditBox : EditBox
     {
-        public DiameterEditBox()
+        public RadiusEditBox()
         {
-            Text = Format(SizingCursorState.Diameter);
-            // Keep the box in sync when a preset button changes the diameter.
-            SizingCursorState.DiameterChanged += (s, e) => Text = Format(SizingCursorState.Diameter);
+            Text = Format(SizingCursorState.Radius);
+            SizingCursorState.RadiusChanged += (s, e) => Text = Format(SizingCursorState.Radius);
         }
 
         protected override void OnEnter()
         {
             if (double.TryParse(Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double d) && d > 0)
-                SizingCursorState.Diameter = d;
+                SizingCursorState.Radius = d;
             else
-                Text = Format(SizingCursorState.Diameter);  // revert invalid input
+                Text = Format(SizingCursorState.Radius);  // revert invalid input
         }
 
         private static string Format(double d) => d.ToString("0.###", CultureInfo.InvariantCulture);
     }
 
-    /// <summary>Base for the quick-size preset buttons; each just sets a diameter.</summary>
-    internal abstract class SizingPresetButtonBase : Button
+    // ---- Scale buttons: set the active scale + reticle color ----
+    internal abstract class ScaleButtonBase : Button
     {
-        protected abstract double PresetDiameter { get; }
-        protected override void OnClick() => SizingCursorState.Diameter = PresetDiameter;
+        protected abstract SizeScale Scale { get; }
+        protected override void OnClick() => SizingCursorState.SetScale(Scale);
     }
 
-    // Preset diameters (meters): 12.5k < 300, 50k = 300, 250k = 1,000, 500k = 3,000.
-    // 12.5k set to 100 m (your "<300"); change here if you want a different value.
-    internal class Preset12kButton  : SizingPresetButtonBase { protected override double PresetDiameter => 100.0;  }
-    internal class Preset50kButton  : SizingPresetButtonBase { protected override double PresetDiameter => 300.0;  }
-    internal class Preset250kButton : SizingPresetButtonBase { protected override double PresetDiameter => 1000.0; }
-    internal class Preset500kButton : SizingPresetButtonBase { protected override double PresetDiameter => 3000.0; }
+    internal class Scale12kButton  : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S12_5K; }
+    internal class Scale50kButton  : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S50K;   }
+    internal class Scale250kButton : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S250K;  }
+    internal class Scale500kButton : ScaleButtonBase { protected override SizeScale Scale => SizeScale.S500K;  }
+
+    // ---- Requirement buttons: set the radius from the active scale's row ----
+    internal abstract class ReqButtonBase : Button
+    {
+        protected abstract SizeReq Req { get; }
+        protected override void OnClick() => SizingCursorState.SetRequirement(Req);
+    }
+
+    internal class ReqRoadSpacingButton : ReqButtonBase { protected override SizeReq Req => SizeReq.RoadSpacing; }
+    internal class ReqRoadBuaButton     : ReqButtonBase { protected override SizeReq Req => SizeReq.RoadBUA;     }
+    internal class ReqCartSparseButton  : ReqButtonBase { protected override SizeReq Req => SizeReq.CartSparse;  }
+    internal class ReqCartDenseButton   : ReqButtonBase { protected override SizeReq Req => SizeReq.CartDense;   }
 }
