@@ -36,8 +36,8 @@ namespace RoadChangerAddIn
 
         /// <summary>
         /// Single fixed draw color for the circle + crosshair (per design choice).
-        /// Blue to match the tool icon. Build symbols from this on the MCT.
+        /// Red. Build symbols from this on the MCT.
         /// </summary>
-        public static CIMColor CursorColor => ColorFactory.Instance.CreateRGBColor(0, 120, 215);
+        public static CIMColor CursorColor => ColorFactory.Instance.CreateRGBColor(230, 0, 0);
     }
 }

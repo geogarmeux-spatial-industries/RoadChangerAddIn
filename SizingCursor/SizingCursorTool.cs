@@ -120,5 +120,47 @@ namespace RoadChangerAddIn
                 }
             });
         }
+
+        // Left-click selects everything the sizing circle covers.
+        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                e.Handled = true;   // route to HandleMouseDownAsync
+        }
+
+        protected override Task HandleMouseDownAsync(MapViewMouseButtonEventArgs e)
+        {
+            return QueuedTask.Run(() =>
+            {
+                var mv = MapView.Active;
+                if (mv == null) return;
+
+                var pt = mv.ClientToMap(e.ClientPoint);
+                if (pt == null) return;
+                var sr = pt.SpatialReference ?? mv.Map.SpatialReference;
+                double radius = SizingCursorState.Diameter / 2.0;
+
+                // circle as a polygon (area select) of the set diameter, at the click point
+                var ell = new GeodesicEllipseParameter
+                {
+                    Center = pt.Coordinate2D,
+                    SemiAxis1Length = radius,
+                    SemiAxis2Length = radius,
+                    AxisDirection = 0.0,
+                    LinearUnit = LinearUnit.Meters,
+                    OutGeometryType = GeometryType.Polygon,
+                    VertexCount = 120
+                };
+                var circle = GeometryEngine.Instance.GeodesicEllipse(ell, sr) as Polygon;
+                if (circle == null) return;
+
+                // Shift = add, Ctrl = remove, otherwise new selection.
+                var method = SelectionCombinationMethod.New;
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0) method = SelectionCombinationMethod.Add;
+                else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0) method = SelectionCombinationMethod.Subtract;
+
+                mv.SelectFeatures(circle, method);
+            });
+        }
     }
 }
